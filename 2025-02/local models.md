@@ -1,0 +1,234 @@
+
+From the local mean to Transformer
+
+**Abstract**
+
+This report introduces a general machine learning framework, termed the localization method, which is rooted in the concept of the local mean and serves as the cornerstone for the self-attention mechanism in the Transformer architecture. The framework is rigorously defined through the establishment of the local model and localization trick, providing a strict and formal expression of its underlying principles. Furthermore, the report delves into the connections between the localization method and an array of other models, such as kernel methods, lazy learning, MeanShift, relaxation labeling, linear neighborhood propagation, and fuzzy inference. By examining these relationships, the report aims to illuminate the broader implications and potential applications of the localization method within the field of machine learning.
+
+**Keywords** Local mean, Local model/Localization trick, Kernel method, Meanshift, Self-attention mechanism/Transformer
+
+
+**Abbreviations**
+- var.: variable(s)
+- distr.: distribution(s)
+- rv(s): random varible(s)
+
+**Notations**
+- word sp.: $\mathcal{W}$
+- word squence sp.: $\mathcal{W}^*$
+
+
+## Introduction
+
+- Definition of Local models/Localization trick
+- Kernel
+- Local mean/self-local mean
+- Lazy learning
+- Local regression and other local models
+- Self-attention mechanism/Transformer
+
+
+## Local models
+
+Assume $l(x,\theta)$ is a loss function and the decision model is an opt. model as follows,
+$$
+\min_\theta \sum_i l(x_i,\theta)
+$$
+where $\{x_i\}$ is the sample.
+
+
+### Local decision models
+
+**Definition（Local decision models）**
+
+$$
+\min_\theta \sum_i K(x_0,x_i)l(x_i,\theta)
+$$
+where $l(x,\theta)$ is a loss at the single point $x$, $\{x_i\}$ is the sample. 
+
+The solution is related to $x_0$, thus denoted as $\hat{\theta}(x_0)$
+
+The total loss on the sample is
+$$
+J(K)=\sum_i l(x_i,\hat{\theta}(x_i;K))
+$$
+where $J(K), \hat{\theta}(x_i;K)$ stress that the loss is also related to the kernel $K$, or the kernel matrix $K(X,X)=\{K(x_i,x_j)\}$.
+
+
+### Localization kernels
+
+The condition for constructing a kernel $K(x_0, x)$ is very weak: 
+1. Non-negativity, i.e., $K(x_0, x) \geq 0$; 
+2. Decrease with distance, i.e., $K(x_0, x)$ is a decreasing function of $d(x_0, x)$, where $d$ is the distance on $\mathcal{X}$;
+3. Symmetry (not necessarily), i.e., can be represented as $K(x_0 - x)$. Such a kernel (or univariate function $K(\cdot)$) is also known as a convolution kernel.
+
+*Remark* $K(x_0, x)$ could be seen as the joint distribution (un-normalized) of $x_0$ and $x$
+
+### Monte Carlo local models
+
+Monte Carlo(re-sampling) form:
+$$\sum_i K(x_0,x_i)l(x_i,\theta) \sim \sum_i l(x_i,\theta), x_i\sim p(x_i|x_0)\sim K(x_0,x_i)$$
+
+Specially, stochastic form:
+$$\sum_i K(x_0,x_i)l(x_i,\theta) \sim l(x_i,\theta), x_i\sim K(x_0,x_i)$$
+
+
+### Local model for machine learing
+
+Following def. reflects the original idea of local.
+**localization for machine learing**
+Given a machine learing model $y\sim f(x,\theta)$, we define its localized model as
+$$
+\min_\theta \frac{1}{N}\sum_i K(x_0,x_i)|y_i-f(x_i,\theta)|^2
+$$
+or for some purposes,
+$$
+\min_\theta \frac{1}{N}\sum_i K(x_0,y_0,x_i,y_i)|y_i-f(x_i,\theta)|^2
+$$
+
+
+### local mean
+The terminal goal of the regression is calculate the conditional expection:
+$$
+E(y|x)\approx \sum_{x_i\in U_x} y_i
+$$
+where $U_x$ is a certain neighorhood of $x$.
+
+**Def**
+A local average of the sample $\{(x_i,y_i)\}$ on target var $x_0$, is defined as,
+$$
+\hat y(x_0):=\sum_i K(x_0,x_i)y_i/\sum_i K(x_0,x_i)
+$$
+
+*Fact*
+Any local regression is reduced to the local average, approximately.
+
+**Def self-local average**
+The **local average mapping**(or **mean shifting**) is defined as,
+$$
+m(x_0):=\sum_i K(x_0,x_i)x_i/\sum_i K(x_0,x_i):\mathcal{X}\to\mathcal{X}
+$$
+
+The self-local average is indeed the local average of the sample $\{(x_i,x_i)\}$.
+
+*Remark* The famous **MeanShift algorithm** is the iteration of the mapping $m$.
+
+
+### Local model for autoregression(AR)
+
+Considier the AR or dynamics as follows,
+$$
+x_{t+1}\sim f(x_t,t), x_t\in\mathcal{X},t=1,2,\cdots
+$$
+where $\mathcal{X}$ is a linear space.
+
+According to the def x.x, the local model of (x.x) could be expressed as,
+$$
+\hat x_{t+1}:= \sum_s K(x_t,t,x_{s},s)x_{s+1}/\sum_s K(x_t,t,x_s,s)
+$$
+regarding the tuple $(x_{t}, t)$ as the input and $x_{t+1}$ as the output.
+
+
+We prefer the following form.
+**Def Local AR/Dynamical system**
+The local model of (x.x) is called the local AR or local DS, expressed as,
+$$
+m(x_{t}):= \sum_s K(x_t,t,x_s,s)x_{s}/\sum_s K(x_t,t,x_s,s)
+$$
+where $t$ could take any type of values in principle.
+
+### Self-attention 1
+
+**Def self-attention(Relative Positional Embedding)**
+One possible design of $K$ is $K_1(x_t,x_s)K_2(t,s)$, where $K_1$ represent the grahic-dependence of elements in $\mathcal{X}$ statically and $K_2$ represents the "position-encoding". 
+
+Hence what the localization really dose is to transform the time-dependency to graphic-dependency.
+
+When the kernel is unrelated to the positions, namely $K$ is designed as $K(x_t,x_s)$, it is reduced to local average.
+
+*Example*
+Let $K_2(t,s)=1_{|t-s|<\delta}$,
+$$
+m(x_{t}):= \sum_{|t-s|<\delta} K(x_t,x_s)x_{s}/\sum_{|t-s|<\delta} K(x_t,x_s)
+$$
+
+
+### Self-attention 2
+
+**Def self-attention(Absolute Positional Embedding)**
+self attention is a local dynamical system with kernel $K(x_t+p(t),x_s+p(s))$ where $p(t)$ is the position-encoding of $t$.
+
+**Def Transformer**
+The Transformer, the most popular large model structure, is identified with the local model with $m^{(6)}(x_{t})$, iterating $m$ six times.
+
+Strictly, the local dynamical system should learn $K$ to implement the self-attention, that is to solve the followint opt problem:
+$$
+\min_K J(K):=\|X-KX\|^2_{F}
+$$
+where $K=\{K(x_t,t,x_s,s)\}_{st},X=\{x_{t}^{(j)}\}_{tj}$。
+
+*Fact* Transformer is a seq. model of MeanShift.
+
+### For discrete data
+Assume $\mathcal{X}$ is disrete.
+
+**Def self-local mode**
+$$
+\hat{x}_{t}:= \argmax_x\sum_{x_s=x} K(x_t,t,x_s,s)
+$$
+
+**Def**
+Assume $c(x)$ represents the onehot encoding (responding proba.) of $x$.
+$$
+\hat{c}(x_t):= \sum_{s} K(x_t,t,x_s,s) c(x_s)/\sum_{s} K(x_t,t,x_s,s)
+$$
+
+## Other models
+
+### Label slacking
+
+
+### IFT
+
+### Fuzzy inference
+
+
+### self-adaptive kernel
+1. param. kernel, $K(x,x';\alpha)$
+2. multikernel, $\sum_lK_l(x,x')$
+3. discrete kernel, 
+   - for continuous rv, $K=K(x_i,x_j):N\times N$ or $K=\phi(x_i)\psi(x_j)^T,\phi,\psi:N\times d$
+   - for discrete rv, $K=K(i,j):\mathcal{X}\times \mathcal{X}$ or $K=\phi(i)\psi(j)^T,\phi,\psi:\mathcal{X}\times d$
+
+
+### Learning the kernels
+
+- continous case:
+$$
+\max_{K}\|X-\tilde{K}X\|_F
+$$
+
+- disrete case:
+$$
+\max_{\phi,\psi}\sum_i(\phi(x_i)\psi(X)^TC(X))_i\oslash (\phi(x_i)\psi(X)^T1_{N\times p})
+$$
+
+
+## Two toy examples
+
+`local-demo.py`
+
+![](local-average.png)
+
+![](image-local-average.png)
+
+
+
+*References*
+
+- Yao-Hung Hubert Tsai, Shaojie Bai Makoto Yamada, Louis-Philippe Morency, Ruslan Salakhutdinov. Transformer Dissection: An Unified Understanding for Transformer’s Attention via the Lens of Kernel.
+
+- Tianyang Lin, Yuxin Wang, Xiangyang Liu, Xipeng Qiu. A survey of transformers.
+  
+- Dai, Zihang and Yang, Zhilin and Yang, Yiming and Carbonell, Jaime and Le, Quoc V and Salakhutdinov, Ruslan. Transformer-xl: Attentive language models beyond a fixed-length context,, arXiv:1901.02860, 2019
+
