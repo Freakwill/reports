@@ -57,12 +57,24 @@ where $J(K), \hat{\theta}(x_i;K)$ stress that the loss is also related to the ke
 
 ### Localization kernels
 
-The condition for constructing a kernel $K(x_0, x)$ is very weak: 
-1. Non-negativity, i.e., $K(x_0, x) \geq 0$; 
-2. Decrease with distance, i.e., $K(x_0, x)$ is a decreasing function of $d(x_0, x)$, where $d$ is the distance on $\mathcal{X}$;
-3. Symmetry (not necessarily), i.e., can be represented as $K(x_0 - x)$. Such a kernel (or univariate function $K(\cdot)$) is also known as a convolution kernel.
+The condition for constructing a kernel $K(x,y)$ is very weak: 
+1. Non-negativity, i.e., $K(x,y) \geq 0$; 
+2. Decrease with distance, i.e., $K(x,y)$ is a decreasing function of $d(x,y)$, where $d$ is the distance on $\mathcal{X}$;
+3. Symmetry (not necessarily), i.e., can be represented as $K(x-y)$. Such a kernel (or univariate function $K(\cdot)$) is also known as a convolution kernel.
 
-*Remark* $K(x_0, x)$ could be seen as the joint distribution (un-normalized) of $x_0$ and $x$
+*Remark* $K(x,y)$ could be seen as the joint distribution (un-normalized) of $x$ and $y$
+
+### Feature mapping
+
+$\phi, \psi:\mathcal{X}\to H$ where $H$ is a Hilbert space, called the feature space.
+
+Construct kernel by two feature mapping.
+$K(x,y)=\phi(x)\cdot \psi(y)$ or $=e^{\phi(x)\cdot \psi(y)}$ (for non-negativity)
+More generally, $K(x,y)=F(\phi(x), \psi(y))$. Here $\phi$ and $\psi$ are called the query-mapping and key-mapping resp.
+
+*Example*
+$$K(x,y)=\int p(z|x)p(z|y)dz$$
+
 
 ### Monte Carlo local models
 
