@@ -100,6 +100,7 @@ $$
 
 
 ### local mean
+
 The terminal goal of the regression is calculate the conditional expection:
 $$
 E(y|x)\approx \sum_{x_i\in U_x} y_i
@@ -181,8 +182,9 @@ where $K=\{K(x_t,t,x_s,s)\}_{st},X=\{x_{t}^{(j)}\}_{tj}$。
 
 *Fact* Transformer is a seq. model of MeanShift.
 
-### For discrete data
-Assume $\mathcal{X}$ is disrete.
+## Embedding method
+
+Assume $\mathcal{X}$ is discrete.
 
 **Def self-local mode**
 $$
