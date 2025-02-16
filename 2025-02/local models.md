@@ -71,9 +71,13 @@ All of above are optional. Only the first one is assumed by default in most case
 
 #### Normalization
 
-$\tilde{K}(x,y):=K(x,y)/\int K(x,y)\mathrm{d}y$
+$\tilde{K}(x,y):=K(x,y)/\int K(x,y)\mathrm{d}y$, the denominator must be positive.
 
 *Remark.* $\tilde{K}(x,y)$ could be seen as the conditional/transition distribution from $x$ to $y$.
+
+A normalized kenerl: $\int K(x,y)\mathrm{d}y=1$
+smoothing kenerl: $\int K(x,y)\mathrm{d}y>0$ (at least $\neq 0$)
+de-smoothing kernel: $\int K(x,y)\mathrm{d}y=0$
 
 
 #### Feature mapping
@@ -97,8 +101,20 @@ Similarly feature matrix: $\phi(X):=\{\phi(x_i)\},\psi(Y)=\{\psi(y_i)\}$
 
 Hence, $K(X,Y)=\Phi(X)\Psi(Y)^T$ or $e^{\Phi(X)\Psi(Y)^T}$
 
-Normalization: $\mathcal{K}(X,Y)=K(X,Y)\oslash K(X,Y)\mathbf{1}:=\{\frac{K(x_i,y_j)}{\sum_j K(x_i,y_j)}\}$
+Normalization: 
+$$\mathcal{K}(X,Y):=\{\frac{K(x_i,y_j)}{\sum_j K(x_i,y_j)}\}\\
+=K(X,Y)\oslash K(X,Y)\mathbf{1}\\
+=D^{-1}K(X,Y)
+$$
+where $D=\mathrm{dial}(\{\sum_j K(x_i,y_j)\})$
 
+#### Laplacian
+
+Laplacian (kernel) of $K$: $L(x,y)=\delta_{xy} -K(x,y)$
+normalized Laplacian (kernel) of $K$: $\tilde{L}(x,y)=\delta_{xy} -\tilde{K}(x,y)$
+
+Laplacian (matrix): $L(X,Y)=D -K(X,Y)$ 
+Laplacian (matrix): $\tilde{L}(X,Y)=I -\tilde{K}(X,Y)$
 
 ### Monte Carlo local models
 
