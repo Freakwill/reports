@@ -26,6 +26,7 @@ This report introduces a general machine learning framework, termed the localiza
 - Lazy learning
 - Local regression and other local models
 - Self-attention mechanism/Transformer
+- Extention
 
 
 ## Local models
@@ -57,14 +58,25 @@ where $J(K), \hat{\theta}(x_i;K)$ stress that the loss is also related to the ke
 
 ### Localization kernels
 
+A (localization) kernel is a bivariate function on sample space $K:\mathcal{X}\times\mathcal{X}\to \mathbb{R}$ with certain conditions.
+
 The condition for constructing a kernel $K(x,y)$ is very weak: 
 1. Non-negativity, i.e., $K(x,y) \geq 0$; 
 2. Decrease with distance, i.e., $K(x,y)$ is a decreasing function of $d(x,y)$, where $d$ is the distance on $\mathcal{X}$;
 3. Symmetry (not necessarily), i.e., can be represented as $K(x-y)$. Such a kernel (or univariate function $K(\cdot)$) is also known as a convolution kernel.
 
-*Remark* $K(x,y)$ could be seen as the joint distribution (un-normalized) of $x$ and $y$
+All of above are optional. Only the first one is assumed by default in most cases.
 
-### Feature mapping
+*Remark.* $K(x,y)$ could be seen as the joint distribution (un-normalized) of $x$ and $y$.
+
+#### Normalization
+
+$\tilde{K}(x,y):=K(x,y)/\int K(x,y)\mathrm{d}y$
+
+*Remark.* $\tilde{K}(x,y)$ could be seen as the conditional/transition distribution from $x$ to $y$.
+
+
+#### Feature mapping
 
 $\phi, \psi:\mathcal{X}\to H$ where $H$ is a Hilbert space, called the feature space.
 
@@ -74,6 +86,18 @@ More generally, $K(x,y)=F(\phi(x), \psi(y))$. Here $\phi$ and $\psi$ are called 
 
 *Example*
 $$K(x,y)=\int p(z|x)p(z|y)dz$$
+
+#### (Emperical) Kernel matrix
+
+$K(X,Y)=\{K(x_i,y_j)\}$ where $X=\{x_i\},Y=\{y_j\}$ are samples.
+
+*Remark.* $K(X,X)$ is shorten as $K(X)$.
+
+Similarly feature matrix: $\phi(X):=\{\phi(x_i)\},\psi(Y)=\{\psi(y_i)\}$
+
+Hence, $K(X,Y)=\Phi(X)\Psi(Y)^T$ or $e^{\Phi(X)\Psi(Y)^T}$
+
+Normalization: $\mathcal{K}(X,Y)=K(X,Y)\oslash K(X,Y)\mathbf{1}:=\{\frac{K(x_i,y_j)}{\sum_j K(x_i,y_j)}\}$
 
 
 ### Monte Carlo local models
@@ -226,6 +250,12 @@ $$
 $$
 \max_{\phi,\psi}\sum_i(\phi(x_i)\psi(X)^TC(X))_i\oslash (\phi(x_i)\psi(X)^T1_{N\times p})
 $$
+
+## Extention
+
+### Heterogenuous kernel
+
+### super kernel
 
 
 ## Two toy examples
