@@ -3,7 +3,7 @@ From the local mean to Transformer
 
 **Abstract**
 
-This report introduces a general machine learning framework, termed the localization method, which is rooted in the concept of the local mean and serves as the cornerstone for the self-attention mechanism in the Transformer architecture. The framework is rigorously defined through the establishment of the local model and localization trick, providing a strict and formal expression of its underlying principles. Furthermore, the report delves into the connections between the localization method and an array of other models, such as kernel methods, lazy learning, MeanShift, relaxation labeling, linear neighborhood propagation, and fuzzy inference. By examining these relationships, the report aims to illuminate the broader implications and potential applications of the localization method within the field of machine learning.
+This report introduces a general machine learning framework, termed the localization method, which is rooted in the concept of the local mean and serves as the cornerstone for the self-attention mechanism in the Transformer architecture. The framework is rigorously defined through the establishment of the local model and localization trick, providing a strict and formal expression of its underlying principles. Furthermore, the report delves into the connections between the localization method and an array of other models, such as kernel methods, lazy learning, MeanShift, relaxation labeling, linear neighborhood propagation, and fuzzy inference, et.al.. By examining these relationships, the report aims to illuminate the broader implications and potential applications of the localization method within the field of machine learning.
 
 **Keywords** Local mean, Local model/Localization trick, Kernel method, Meanshift, Self-attention mechanism/Transformer
 
@@ -12,7 +12,7 @@ This report introduces a general machine learning framework, termed the localiza
 - sample space: $\mathcal{X}$
 - sample squence sp.: $\mathcal{X}^*$
 - random variable(rv): $x$
-- sample: $X$ or $\{x_i\}$
+- sample/a family of rvs: $X$ or $\{x_i\}$ (write $\{x_i\}_i$ to stress the index.)
 - distribution: $x\sim p$
 - machine learning model: $y\sim f(x,\theta)$
 - approximation: $X\approx Y$
@@ -24,7 +24,7 @@ This report introduces a general machine learning framework, termed the localiza
 - Kernel
 - Local mean/self-local mean
 - Lazy learning
-- Local regression and other local models
+- Connection with models
 - Self-attention mechanism/Transformer
 - Extention
 
@@ -33,7 +33,7 @@ This report introduces a general machine learning framework, termed the localiza
 
 Assume $l(x,\theta)$ is a loss function and the decision model is an opt. model as follows,
 $$
-\min_\theta \sum_i l(x_i,\theta)   ~~~ (A)
+\min_\theta \sum_i l(x_i,\theta)
 $$
 where $\{x_i\}$ is the sample.
 
@@ -41,11 +41,11 @@ where $\{x_i\}$ is the sample.
 ### Local decision models
 
 **Definition（Local decision models）**
-Given a target point $x_*$, the local model of (A) is defined as
+Given a target point $x_*$, the local model of (1) is defined as
 $$
-\min_\theta \sum_i K(x_*,x_i)l(x_i,\theta)   ~~~ (B)
+\min_\theta \sum_i K(x_*,x_i)l(x_i,\theta)
 $$
-where $l(x,\theta)$ is a loss at the single point $x$, $\{x_i\}$ is the sample. The solution of (B) is related to $x_*$, thus denoted as $\hat{\theta}(x_*)$. We call (B) is the localization of (A).
+where $l(x,\theta)$ is a loss at the single point $x$, $\{x_i\}$ is the sample. The solution of (2) is related to $x_*$, thus denoted as $\hat{\theta}(x_*)$. We call (2) is the localization of (1).
 
 The total loss on the sample is
 $$
@@ -105,11 +105,14 @@ Similarly feature matrix: $\phi(X):=\{\phi(x_i)\},\psi(Y)=\{\psi(y_i)\}$
 
 Hence, $K(X,Y)=\phi(X)\psi(Y)^T$ or $e^{\phi(X)\psi(Y)^T}$
 
-Normalization: 
-$$\mathcal{K}(X,Y):=\{\frac{K(x_i,y_j)}{\sum_j K(x_i,y_j)}\}\\
+Normalization of kernel matrix: 
+
+$$
+\mathcal{K}(X,Y):=\{\frac{K(x_i,y_j)}{\sum_j K(x_i,y_j)}\}\\
 =K(X,Y)\oslash K(X,Y)\mathbf{1}\\
 =D^{-1}K(X,Y)
 $$
+
 where $D=\mathrm{dial}(\{\sum_j K(x_i,y_j)\})$
 
 #### Laplacian
@@ -125,23 +128,36 @@ Differential kernel: $\lim_{\Delta h\to 0}\frac{K_{h}-K_{h+\Delta h}}{\Delta h}$
 
 *Remark.* The Laplacian is stemmed from the graph theory. Any graph has its (normalized) laplacian.
 
+#### Connection with PDE
+
+Note that the differential or difference operators are some laplacian kernels.
+
+You are recommended to read the reference `Buades2006`, which will not be analyzed here.
+
 #### Self-localization kernel
+
 A four-varaiate function $K:\mathcal{X}\times\R \times\mathcal{X}\times\R \to \R$ is called self-localization kernel, and correspoing to the non-linear operator:
 
-$$Kf := \int K(x,f(x),y,f(y))f(y)\mathrm{d}y$$
+$$
+Kf := \int K(x,f(x),y,f(y))f(y)\mathrm{d}y
+$$
 
 ### Monte Carlo local models
 
-Monte Carlo(re-sampling) form:
-$$\sum_i K(x_0,x_i)l(x_i,\theta) \sim \sum_i l(x_i,\theta), x_i\sim p(x_i|x_0)\sim K(x_0,x_i)$$
+The Monte Carlo(re-sampling) form:
+$$
+\sum_i K(x_0,x_i)l(x_i,\theta) \sim \sum_i l(x_i,\theta), x_i\sim p(x_i|x_0)\sim K(x_0,x_i)
+$$
 
-Specially, stochastic form:
-$$\sum_i K(x_0,x_i)l(x_i,\theta) \sim l(x_i,\theta), x_i\sim K(x_0,x_i)$$
-
+Specially, we have the stochastic form:
+$$
+\sum_i K(x_0,x_i)l(x_i,\theta) \sim l(x_i,\theta), x_i\sim K(x_0,x_i)
+$$
 
 ### Local model for machine learing
 
 Following def. reflects the original idea of local.
+
 **localization for machine learing**
 Given a machine learing model $y\sim f(x,\theta)$, we define its localized model as
 $$
@@ -155,64 +171,84 @@ $$
 ### Neighbourhood/Topology
 
 As a typical type of local model:
-$\min_\theta \frac{1}{N}\sum_i K(x_0,y_0,x_i,y_i)|y_i-f(x_i,\theta)|^2$
-
-
-## local mean
-
-The terminal goal of the regression is calculate the **conditional expection**:
 $$
-E(y|x)\approx \sum_{x_i\in U_x} y_i \quad\text{or}\quad \sum_j y_i p(x_i|x)
+\min_\theta \frac{1}{N}\sum_i K(x_0,y_0,x_i,y_i)|y_i-f(x_i,\theta)|^2
+$$
+
+
+## Local Mean
+
+### The local mean (for regression)
+
+The terminal goal of the regression is to calculate the **conditional expection**:
+$$
+E(y|x)\approx \sum_{x_i\in U_x} y_i \quad\text{or}\quad \sum_i y_i p(x_i|x)
 $$
 where $U_x$ is a certain neighorhood of $x$, $\{x_i,y_i\}$ is the sample.
 
 **Def**
-A local mean of the sample $\{(x_i,y_i)\}$ on target var $x_0$, is defined as,
+A local mean of the sample $\{(x_i,y_i)\}$ on target var $x_*$, is defined as,
 $$
-\hat y(x_0):=\sum_i K(x_0,x_i)y_i/\sum_i K(x_0,x_i)
+\hat{y}(x_0):=\sum_i K(x_0,x_i)y_i/\sum_i K(x_0,x_i)
 $$
 
-### self-local model
+### The local mode  (for classification)
 
-*Fact*
-Any local regression is reduced to the local mean, approximately.
+$$
+M(y|x)\approx \max_k \{y_i=k | x_i\in U_x\} \quad\text{or}\quad \max_k\sum_i p(x_i=k|x)
+$$
+
+People are more accustomed to using embedding methods.
+
+**Def self-local mode**
+Assume $v(x)$ represents the onehot encoding (responding proba.) of $x$.
+$$
+\hat{v}(x_j):= \sum_{s} K(x_i,x_j) v(x_j)/\sum_{j} K(x_i,i,x_j,j)
+$$
+
+**The query-key-value(Q-K-V) representation**: $(\phi,\psi,v)$ for $\mathcal{X}$
+
+### The self-local model
+
+*Fact* Any local regression is reduced to the local mean, approximately.
 
 **Def. self-local mean**
 The **local mean mapping** (or **mean shifting**) is defined as,
 $$
-m(x_*0*):=\sum_i K(x_*0*,x_i)x_i/\sum_i K(x_*0*,x_i):\mathcal{X}\to\mathcal{X}
+m(x_*):=\sum_i K(x_*,x_i)x_i/\sum_i K(x_*,x_i):\mathcal{X}\to\mathcal{X}
 $$
-
 The self-local mean is indeed the local mean of the sample $\{(x_i,x_i)\}$. Reversely, The local mean is a special type of self-local mean on $\mathcal{X}\times\mathcal{Y}$.
 
 MeanShift (vector field): $m(x)-x$
-MeanShift iteration/updating rule: $x'\leftarrow m(x)$ or $x' \leftarrow x + \alpha(m(x)-x)$ (soft or regularized version)
+MeanShift iteration/updating rule: $x'\leftarrow m(x)$ (hard version) or $x' \leftarrow x + \alpha(m(x)-x)$ (soft/regularized version), $0\leq \alpha\leq 1$ is the learning rate.
 
 **MeanShift algorithm** is the iteration of the mapping $m$.
 
-
 ### Local model for autoregression(AR)
 
-Considier the AR or dynamics as follows,
+Considier the AR (or dynamics or time series) as follows,
 $$
 x_{t+1}\sim f(x_t,t), x_t\in\mathcal{X},t=1,2,\cdots
 $$
-where $\mathcal{X}$ is a linear space.
 
-According to the def x.x, the local model of (x.x) could be expressed as,
+Assume that $\mathcal{X}$ is a Eucliean space (or its subset).
+According to the def. of self local model, the local model of (x.x) could be expressed as,
 $$
 \hat x_{t+1}:= \sum_s K(x_t,t,x_{s},s)x_{s+1}/\sum_s K(x_t,t,x_s,s)
 $$
 regarding the tuple $(x_{t}, t)$ as the input and $x_{t+1}$ as the output.
 
-
-We prefer the following form.
+We prefer the following form (I'd like call it  *the local time-series model*).
 **Def Local AR/Dynamical system**
 The local model of (x.x) is called the local AR or local DS, expressed as,
 $$
 m(x_{t}):= \sum_s K(x_t,t,x_s,s)x_{s}/\sum_s K(x_t,t,x_s,s)
 $$
 where $t$ could take any type of values in principle.
+
+*Remark.* The local time-series model is indeed the local mean under the self-localization kernel.
+
+## Self-attation system
 
 ### Self-attention 1
 
@@ -228,7 +264,6 @@ Let $K_2(t,s)=1_{|t-s|<\delta}$,
 $$
 m(x_{t}):= \sum_{|t-s|<\delta} K(x_t,x_s)x_{s}/\sum_{|t-s|<\delta} K(x_t,x_s)
 $$
-
 
 ### Self-attention 2
 
@@ -246,36 +281,77 @@ where $K=\{K(x_t,t,x_s,s)\}_{st},X=\{x_{t}^{(j)}\}_{tj}$。
 
 *Fact* Transformer is a seq. model of MeanShift.
 
-## Embedding method
+### Self-attention 3/key-query-value model
 
-Assume $\mathcal{X}$ is discrete.
+For the discrete case, we should consider the self-local mode.
 
 **Def self-local mode**
 $$
 \hat{x}_{t}:= \argmax_x\sum_{x_s=x} K(x_t,t,x_s,s)
 $$
 
-**Def**
-Assume $c(x)$ represents the onehot encoding (responding proba.) of $x$.
+Or using embedding method
+**Def self-local mode**
+Assume $v(x)$ represents the onehot encoding (responding proba.) of $x$.
 $$
-\hat{c}(x_t):= \sum_{s} K(x_t,t,x_s,s) c(x_s)/\sum_{s} K(x_t,t,x_s,s)
+\hat{v}(x_t):= \sum_{s} K(x_t,t,x_s,s) v(x_s)/\sum_{s} K(x_t,t,x_s,s)
 $$
+
+The time-series Q-K-V representation: $(\phi(x_t,t),\psi(x_t,t),v(x_t))$. It is called the key-query-value model in `Vaswani2017`.
 
 ## Other models
 
-### relaxation labeling
+### the Lazy learning/model
+
+**Lazy learning/models**: A mode whose prediction does not rely on a substantial parameter estimation process.
+
+Hence the non-parametric models are probably lazy models.
+
+Give a parameteric model $P(x|\theta)$, we have to estimate $\hat{\theta}(X)$ where $X$ is a sample. Then predict $\hat{x} = T(x|\hat{\theta})$ (hard) or $x\sim P(x|\hat{\theta})$ (soft).
+A lazy model only has prediction task (called lazy prediction): $x\sim P(x|X)$ or $\hat{x}=T(x;X)=T(X)x$. If $T(x)$ is linear, we call it linear lazy model.
+
+**Lazy mapping**: $X\mapsto \{T(x_i;X)\}:\mathcal{X}^N\to \mathcal{X}^N$.
+
+*Remark.* (self)-local-mean is the general form of linear lazy model.
+
+Introducing the conditional varable, we get the usual form of lazy prediction/model/learning:
+$$
+\hat{y}(x) = T(x;X,Y)
+$$
+where $X=\{x_i\},Y=\{y_i\}$ are samples.
+
+**Lazy mapping**: $Y\mapsto \{T(x_i;X,Y)\}:\mathcal{Y}^N\to \mathcal{Y}^N$.
+
+Lazy mapping iteration/prediction iteration: Iteration the lazy mapping can to the tasks of unsupervised learning.
+
+**propagation learning/model**
+
+### Relaxation labeling
+
+See the reference `Hummel1983`.
+
+### Linear neighborhood propagation
+
+Another type of relaxation labeling
+
+### query model
 
 ### Fuzzy inference
 
+membership function
+
+fuzzy inference system
 
 ## Learning the kernels
 
 ### self-adaptive kernel
 1. param. kernel, $K(x,x';\alpha)$
-2. multikernel, $\sum_lK_l(x,x')$
+2. multikernel, $\sum_lw_lK_l(x,x')$;
 3. discrete kernel, 
    - for continuous rv, $K=K(x_i,x_j):N\times N$ or $K=\phi(x_i)\psi(x_j)^T,\phi,\psi:N\times d$
    - for discrete rv, $K=K(i,j):\mathcal{X}\times \mathcal{X}$ or $K=\phi(i)\psi(j)^T,\phi,\psi:\mathcal{X}\times d$
+
+*Remark.* Multiheads: $\{\sum_{jl}w_{jlm}K_l(x,x')x^{(j)}\}_m$
 
 
 ### Optimization of the kernels
@@ -284,7 +360,6 @@ $$
 $$
 \max_{K}\|X-\tilde{K}X\|_F
 $$
-
 - disrete case:
 $$
 \max_{\phi,\psi}\sum_i(\phi(x_i)\psi(X)^TC(X))_i\oslash (\phi(x_i)\psi(X)^T1_{N\times p})
@@ -327,7 +402,9 @@ I call the "functor" loc, constructor, mapping a model to another.
 
 *References*
 
--
+- R. A. Hummel and S. W. Zucker, "On the foundations of relaxation labeling processes," *IEEE Transactions on Pattern Analysis and Machine Intelligence*, 1983(3): 267 - 287.
+
+- Buades, A., Coll, B., & Morel, J. -M. (2006). Neighborhood filters and PDE’s. Numerische Mathematik, 105, 1–34. Springer. 
 
 - Yao-Hung Hubert Tsai, Shaojie Bai Makoto Yamada, Louis-Philippe Morency, Ruslan Salakhutdinov. Transformer Dissection: An Unified Understanding for Transformer’s Attention via the Lens of Kernel.
 
@@ -335,3 +412,4 @@ I call the "functor" loc, constructor, mapping a model to another.
   
 - Dai, Zihang and Yang, Zhilin and Yang, Yiming and Carbonell, Jaime and Le, Quoc V and Salakhutdinov, Ruslan. Transformer-xl: Attentive language models beyond a fixed-length context,, arXiv:1901.02860, 2019
 
+- A. Vaswani, N. Shazeer, N. Norioka, J. Parmar, L. Jones, A. N. Gomez, Ł. Kaiser and I. Polosukhin, "Attention Is All You Need," in Advances in Neural Information Processing Systems, 2017: 5998-6008.
