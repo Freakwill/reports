@@ -8,17 +8,14 @@ This report introduces a general machine learning framework, termed the localiza
 **Keywords** Local mean, Local model/Localization trick, Kernel method, Meanshift, Self-attention mechanism/Transformer
 
 
-**Abbreviations**
-- var.: variable(s)
-- distr.: distribution(s)
-- rv(s): random varible(s)
-
 **Notations**
-- word sp.: $\mathcal{W}$
-- word squence sp.: $\mathcal{W}^*$
+- sample space: $\mathcal{X}$
+- sample squence sp.: $\mathcal{X}^*$
+- random variable(rv): $x$
+- sample: $X$ or $\{x_i\}$
 
 
-## Introduction
+## Content
 
 - Definition of Local models/Localization trick
 - Kernel
@@ -33,7 +30,7 @@ This report introduces a general machine learning framework, termed the localiza
 
 Assume $l(x,\theta)$ is a loss function and the decision model is an opt. model as follows,
 $$
-\min_\theta \sum_i l(x_i,\theta)
+\min_\theta \sum_i l(x_i,\theta)   ~~~ (A)
 $$
 where $\{x_i\}$ is the sample.
 
@@ -41,20 +38,17 @@ where $\{x_i\}$ is the sample.
 ### Local decision models
 
 **Definition（Local decision models）**
-
+Given a target point $x_*$, the local model of (A) is defined as
 $$
-\min_\theta \sum_i K(x_0,x_i)l(x_i,\theta)
+\min_\theta \sum_i K(x_*,x_i)l(x_i,\theta)   ~~~ (B)
 $$
-where $l(x,\theta)$ is a loss at the single point $x$, $\{x_i\}$ is the sample. 
-
-The solution is related to $x_0$, thus denoted as $\hat{\theta}(x_0)$
+where $l(x,\theta)$ is a loss at the single point $x$, $\{x_i\}$ is the sample. The solution of (B) is related to $x_*$, thus denoted as $\hat{\theta}(x_*)$. We call (B) is the localization of (A).
 
 The total loss on the sample is
 $$
 J(K)=\sum_i l(x_i,\hat{\theta}(x_i;K))
 $$
 where $J(K), \hat{\theta}(x_i;K)$ stress that the loss is also related to the kernel $K$, or the kernel matrix $K(X,X)=\{K(x_i,x_j)\}$.
-
 
 ### Localization kernels
 
@@ -69,6 +63,8 @@ All of above are optional. Only the first one is assumed by default in most case
 
 *Remark.* $K(x,y)$ could be seen as the joint distribution (un-normalized) of $x$ and $y$.
 
+*Remark.* Please note that the localization method is different from the kernel method. There are many connections between the two, but there are also obvious differences. However, the two can definitely be unified.
+
 #### Normalization
 
 $\tilde{K}(x,y):=K(x,y)/\int K(x,y)\mathrm{d}y$, the denominator must be positive.
@@ -79,16 +75,15 @@ A normalized kenerl: $\int K(x,y)\mathrm{d}y=1$
 smoothing kenerl: $\int K(x,y)\mathrm{d}y>0$ (at least $\neq 0$)
 de-smoothing kernel: $\int K(x,y)\mathrm{d}y=0$
 
-
 #### Feature mapping
 
-$\phi, \psi:\mathcal{X}\to H$ where $H$ is a Hilbert space, called the feature space.
+$\phi, \psi:\mathcal{X}\to H$ where $H$ is inner product space, called the feature space.
 
 Construct kernel by two feature mapping.
 $K(x,y)=\phi(x)\cdot \psi(y)$ or $=e^{\phi(x)\cdot \psi(y)}$ (for non-negativity)
 More generally, $K(x,y)=F(\phi(x), \psi(y))$. Here $\phi$ and $\psi$ are called the query-mapping and key-mapping resp.
 
-*Example*
+*Example.*
 $$K(x,y)=\int p(z|x)p(z|y)dz$$
 
 #### (Emperical) Kernel matrix
@@ -115,6 +110,8 @@ normalized Laplacian (kernel) of $K$: $\tilde{L}(x,y)=\delta_{xy} -\tilde{K}(x,y
 
 Laplacian (matrix): $L(X,Y)=D -K(X,Y)$ 
 Laplacian (matrix): $\tilde{L}(X,Y)=I -\tilde{K}(X,Y)$
+
+*Remark.* The Laplacian is stemmed from the graph theory. Any graph has its (normalized) laplacian.
 
 ### Monte Carlo local models
 
