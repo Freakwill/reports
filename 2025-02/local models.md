@@ -263,13 +263,12 @@ $$
 
 ## Other models
 
-### Label slacking
-
-
-### IFT
+### relaxation labeling
 
 ### Fuzzy inference
 
+
+## Learning the kernels
 
 ### self-adaptive kernel
 1. param. kernel, $K(x,x';\alpha)$
@@ -279,7 +278,7 @@ $$
    - for discrete rv, $K=K(i,j):\mathcal{X}\times \mathcal{X}$ or $K=\phi(i)\psi(j)^T,\phi,\psi:\mathcal{X}\times d$
 
 
-### Learning the kernels
+### Optimization of the kernels
 
 - continous case:
 $$
@@ -294,6 +293,8 @@ $$
 ## Extention
 
 ### Heterogenuous kernel
+
+$K(x,y):\mathcal{X}\times \mathcal{Y}\to \R$.
 
 ### super kernel
 
@@ -315,6 +316,14 @@ I call the "functor" loc, constructor, mapping a model to another.
 ![](image-local-average.png)
 
  -->
+
+## Summary
+
+- Give the definition of localization kernels
+- Local models: appling localization trick to a given model (linear usually); or any model/statistic based on the localization kernels.
+- Find the connection with other models; Many classical models are thought to be local model
+- Propose a unified framework/language to describe/construct a machine learning model
+
 
 *References*
 
