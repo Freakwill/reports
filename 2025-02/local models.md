@@ -192,25 +192,16 @@ $$
 \hat{y}(x_0):=\sum_i K(x_0,x_i)y_i/\sum_i K(x_0,x_i)
 $$
 
+*Fact* Any local regression is reduced to the local mean, approximately.
+
+
 ### The local mode  (for classification)
 
 $$
 M(y|x)\approx \max_k \{y_i=k | x_i\in U_x\} \quad\text{or}\quad \max_k\sum_i p(x_i=k|x)
 $$
 
-People are more accustomed to using embedding methods.
-
-**Def self-local mode**
-Assume $v(x)$ represents the onehot encoding (responding proba.) of $x$.
-$$
-\hat{v}(x_j):= \sum_{s} K(x_i,x_j) v(x_j)/\sum_{j} K(x_i,i,x_j,j)
-$$
-
-**The query-key-value(Q-K-V) representation**: $(\phi,\psi,v)$ for $\mathcal{X}$
-
-### The self-local model
-
-*Fact* Any local regression is reduced to the local mean, approximately.
+### The self-local mean
 
 **Def. self-local mean**
 The **local mean mapping** (or **mean shifting**) is defined as,
@@ -223,6 +214,23 @@ MeanShift (vector field): $m(x)-x$
 MeanShift iteration/updating rule: $x'\leftarrow m(x)$ (hard version) or $x' \leftarrow x + \alpha(m(x)-x)$ (soft/regularized version), $0\leq \alpha\leq 1$ is the learning rate.
 
 **MeanShift algorithm** is the iteration of the mapping $m$.
+
+### The self-local mode
+
+People are more accustomed to using **embedding methods**.
+
+**Def local mode**
+Assume $v(\cdot)$ represents the onehot encoding (responding proba.) of $x$. The local model
+$$
+\hat{v}(y_j):= \sum_{s} K(x_i,x_j) v(x_j)/\sum_{j} K(x_i,x_j)
+$$
+or
+$$
+\hat{v}(x_j):= \sum_{s} K(x_i,x_j) v(x_j)/\sum_{j} K(x_i,x_j)
+$$
+
+Assume $\phi,\psi$ are the feature mapping of $K$, then we introduce
+**The query-key-value(Q-K-V) representation**: $(\phi,\psi,v)$ for $\mathcal{X}$
 
 ### Local model for autoregression(AR)
 
@@ -334,13 +342,28 @@ See the reference `Hummel1983`.
 
 Another type of relaxation labeling
 
-### query model
+### Query model
+
+The query model: $T(\{K(x_*,x_i)\},y_i)$, where $T$ is the query operator.
+If $T$ is linear, then it is the local mean.
 
 ### Fuzzy inference
 
-membership function
+| Fuzzy math| probability theory|
+|---|---|
+|membership function|probability density|
+|fuzzification| transition/conditional probability|
 
-fuzzy inference system
+Fuzzification of $x$: $f(x) = x'\mapsto p(x|x')$.
+
+A inference system is denoted as $\{x_i\to y_i\}$ formally. The prediction of the system is $T(x_*, \{x_i\to y_i\})$ where $T$ is the inference operator. In a fuzzy inference system, $\{x_i\to y_i\}$ is usally defined as
+$$
+\sum_iy_i\phi(x_i) \quad\text{or}\quad S(\{\phi(x_i)\},y_i\})
+$$
+where $\phi(x_i)$ are the fuzzification of $x_i$ and $y_i$ are the real numbers. It is local mean essentially, if we define
+$$
+T(x_*, \{x_i\to y_i\}):=(\sum_iv(y_i)\langle\phi(x_i),\psi(x_i))\rangle
+$$
 
 ## Learning the kernels
 
