@@ -13,6 +13,9 @@ This report introduces a general machine learning framework, termed the localiza
 - sample squence sp.: $\mathcal{X}^*$
 - random variable(rv): $x$
 - sample: $X$ or $\{x_i\}$
+- distribution: $x\sim p$
+- machine learning model: $y\sim f(x,\theta)$
+- approximation: $X\approx Y$
 
 
 ## Content
@@ -94,7 +97,7 @@ $K(X,Y)=\{K(x_i,y_j)\}$ where $X=\{x_i\},Y=\{y_j\}$ are samples.
 
 Similarly feature matrix: $\phi(X):=\{\phi(x_i)\},\psi(Y)=\{\psi(y_i)\}$
 
-Hence, $K(X,Y)=\Phi(X)\Psi(Y)^T$ or $e^{\Phi(X)\Psi(Y)^T}$
+Hence, $K(X,Y)=\phi(X)\psi(Y)^T$ or $e^{\phi(X)\psi(Y)^T}$
 
 Normalization: 
 $$\mathcal{K}(X,Y):=\{\frac{K(x_i,y_j)}{\sum_j K(x_i,y_j)}\}\\
@@ -128,38 +131,45 @@ Following def. reflects the original idea of local.
 **localization for machine learing**
 Given a machine learing model $y\sim f(x,\theta)$, we define its localized model as
 $$
-\min_\theta \frac{1}{N}\sum_i K(x_0,x_i)|y_i-f(x_i,\theta)|^2
+\min_\theta \sum_i K(x_0,x_i)|y_i-f(x_i,\theta)|^2
 $$
 or for some purposes,
 $$
-\min_\theta \frac{1}{N}\sum_i K(x_0,y_0,x_i,y_i)|y_i-f(x_i,\theta)|^2
+\min_\theta \sum_i K(x_0,y_0,x_i,y_i)|y_i-f(x_i,\theta)|^2
 $$
 
+### Neighbourhood/Topology
 
-### local mean
+As a typical type of local model:
+$\min_\theta \frac{1}{N}\sum_i K(x_0,y_0,x_i,y_i)|y_i-f(x_i,\theta)|^2$
 
-The terminal goal of the regression is calculate the conditional expection:
+
+## local mean
+
+The terminal goal of the regression is calculate the **conditional expection**:
 $$
-E(y|x)\approx \sum_{x_i\in U_x} y_i
+E(y|x)\approx \sum_{x_i\in U_x} y_i \quad\text{or}\quad \sum_j y_i p(x_i|x)
 $$
 where $U_x$ is a certain neighorhood of $x$.
 
 **Def**
-A local average of the sample $\{(x_i,y_i)\}$ on target var $x_0$, is defined as,
+A local mean of the sample $\{(x_i,y_i)\}$ on target var $x_0$, is defined as,
 $$
 \hat y(x_0):=\sum_i K(x_0,x_i)y_i/\sum_i K(x_0,x_i)
 $$
 
-*Fact*
-Any local regression is reduced to the local average, approximately.
+### self-local model
 
-**Def self-local average**
-The **local average mapping**(or **mean shifting**) is defined as,
+*Fact*
+Any local regression is reduced to the local mean, approximately.
+
+**Def. self-local mean**
+The **local mean mapping** (or **mean shifting**) is defined as,
 $$
 m(x_0):=\sum_i K(x_0,x_i)x_i/\sum_i K(x_0,x_i):\mathcal{X}\to\mathcal{X}
 $$
 
-The self-local average is indeed the local average of the sample $\{(x_i,x_i)\}$.
+The self-local mean is indeed the local mean of the sample $\{(x_i,x_i)\}$. Reversely, The local mean is a special type of self-local mean on $\mathcal{X}\times\mathcal{Y}$.
 
 *Remark* The famous **MeanShift algorithm** is the iteration of the mapping $m$.
 
@@ -270,8 +280,16 @@ $$
 
 ### super kernel
 
+## Categorical-style method
 
-## Two toy examples
+$\mathrm{loc}(M)$ represents to apply the localization trick on a given model $M$.
+
+I call the "functor" loc, constructor, mapping a model to another.
+
+1. $\mathrm{loc}(M)\simeq \mathrm{loc}(\mathrm{loc}(M))$ (in categorical-sence, not strictly)
+2. $\mathrm{loc}(M)$ must be complicative then $M$, if $M$ is linear.
+
+<!-- ## Two toy examples
 
 `local-demo.py`
 
@@ -279,7 +297,7 @@ $$
 
 ![](image-local-average.png)
 
-
+ -->
 
 *References*
 
