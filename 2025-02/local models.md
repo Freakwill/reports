@@ -68,11 +68,17 @@ All of above are optional. Only the first one is assumed by default in most case
 
 *Remark.* Please note that the localization method is different from the kernel method. There are many connections between the two, but there are also obvious differences. However, the two can definitely be unified.
 
+A kernel $K$ is corresponded to a linear operator on function spaces:
+$$
+Kf := \int K(x,y) f(y)\mathrm{d}y
+$$
+
 #### Normalization
 
+Normalization of kernel $K$:
 $\tilde{K}(x,y):=K(x,y)/\int K(x,y)\mathrm{d}y$, the denominator must be positive.
 
-*Remark.* $\tilde{K}(x,y)$ could be seen as the conditional/transition distribution from $x$ to $y$.
+*Remark.* $\tilde{K}(x,y)$ could be seen as the conditional/transition distribution $x\to y$.
 
 A normalized kenerl: $\int K(x,y)\mathrm{d}y=1$
 smoothing kenerl: $\int K(x,y)\mathrm{d}y>0$ (at least $\neq 0$)
@@ -114,7 +120,15 @@ normalized Laplacian (kernel) of $K$: $\tilde{L}(x,y)=\delta_{xy} -\tilde{K}(x,y
 Laplacian (matrix): $L(X,Y)=D -K(X,Y)$ 
 Laplacian (matrix): $\tilde{L}(X,Y)=I -\tilde{K}(X,Y)$
 
+Difference kernel: $K_1-K_2$.
+Differential kernel: $\lim_{\Delta h\to 0}\frac{K_{h}-K_{h+\Delta h}}{\Delta h}$.
+
 *Remark.* The Laplacian is stemmed from the graph theory. Any graph has its (normalized) laplacian.
+
+#### Self-localization kernel
+A four-varaiate function $K:\mathcal{X}\times\R \times\mathcal{X}\times\R \to \R$ is called self-localization kernel, and correspoing to the non-linear operator:
+
+$$Kf := \int K(x,f(x),y,f(y))f(y)\mathrm{d}y$$
 
 ### Monte Carlo local models
 
@@ -150,7 +164,7 @@ The terminal goal of the regression is calculate the **conditional expection**:
 $$
 E(y|x)\approx \sum_{x_i\in U_x} y_i \quad\text{or}\quad \sum_j y_i p(x_i|x)
 $$
-where $U_x$ is a certain neighorhood of $x$.
+where $U_x$ is a certain neighorhood of $x$, $\{x_i,y_i\}$ is the sample.
 
 **Def**
 A local mean of the sample $\{(x_i,y_i)\}$ on target var $x_0$, is defined as,
@@ -166,12 +180,15 @@ Any local regression is reduced to the local mean, approximately.
 **Def. self-local mean**
 The **local mean mapping** (or **mean shifting**) is defined as,
 $$
-m(x_0):=\sum_i K(x_0,x_i)x_i/\sum_i K(x_0,x_i):\mathcal{X}\to\mathcal{X}
+m(x_*0*):=\sum_i K(x_*0*,x_i)x_i/\sum_i K(x_*0*,x_i):\mathcal{X}\to\mathcal{X}
 $$
 
 The self-local mean is indeed the local mean of the sample $\{(x_i,x_i)\}$. Reversely, The local mean is a special type of self-local mean on $\mathcal{X}\times\mathcal{Y}$.
 
-*Remark* The famous **MeanShift algorithm** is the iteration of the mapping $m$.
+MeanShift (vector field): $m(x)-x$
+MeanShift iteration/updating rule: $x'\leftarrow m(x)$ or $x' \leftarrow x + \alpha(m(x)-x)$ (soft or regularized version)
+
+**MeanShift algorithm** is the iteration of the mapping $m$.
 
 
 ### Local model for autoregression(AR)
@@ -300,6 +317,8 @@ I call the "functor" loc, constructor, mapping a model to another.
  -->
 
 *References*
+
+-
 
 - Yao-Hung Hubert Tsai, Shaojie Bai Makoto Yamada, Louis-Philippe Morency, Ruslan Salakhutdinov. Transformer Dissection: An Unified Understanding for Transformer’s Attention via the Lens of Kernel.
 
