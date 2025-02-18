@@ -67,6 +67,9 @@ All of above are optional. Only the first one is assumed by default in most case
 *Remark.* $K(x,y)$ could be seen as the joint distribution (un-normalized) of $x$ and $y$.
 
 *Remark.* Please note that the localization method is different from the kernel method. There are many connections between the two, but there are also obvious differences. However, the two can definitely be unified.
+In the kernel method, the kernel is always sym.p.d. (in usual settings), called positive definite kernel To distinguish it from the localized kernel.
+
+#### As an operator on function spaces
 
 A kernel $K$ is corresponded to a linear operator on function spaces:
 $$
@@ -196,8 +199,13 @@ $$
 
 ![](local-mean-pgm.png)
 
+*Theorem (`comaniciu2002`)*
+The *mean shift* $m_K({x})-{x}$ and the gradient of the Kernel Density Estimation (KDE) $\nabla\hat{p}_L({x})$ have the same direction. The kernel $K$ of the local mean can be derived from the kernel $L$ of the KDE $\hat{p}({x})$ (referred to as "the Shadow kernel")
+$$
+  m_K({x})-{x} \propto \frac{\nabla_{{x}}\hat{p}_L({x})}{\hat{p}_K({x})}\approx \nabla_{{x}}\ln p({x})
+$$
 
-### The local mode  (for classification)
+### The local mode (for classification)
 
 Similarly, we define *the local mode* as
 $$
@@ -326,6 +334,8 @@ $$
 
 The *time-series Q-K-V representation*: $(\phi(x_t,t),\psi(x_t,t),v(x_t))$. It is called the *key-query-value model* in `Vaswani2017`.
 
+![Q-K-V representation](qkv.png)
+
 ## Other models
 
 ### the Lazy learning/model
@@ -397,7 +407,16 @@ $$
 
 ### Denoising autoencoder
 
-the local mean is an inverse operation of adding noise.
+*Theorem*[Tweedie's Formula]
+Let ${z} \sim p_{{z}}$ and ${x}|{z} \sim N({z}, \sigma^2)$, where $\sigma^2>0$ is known. Evidently, the marginal distribution of ${x}$ is $p({x})=p_{{z}}*\phi_\sigma$, where $\phi_\sigma$ is the Gaussian density function/kernel. Then we have the well - known Tweedie's Formula:
+$$
+\mathbb{E}({z}|{x}) = {x} + \sigma^2\nabla_{{x}} \ln p({x})
+$$
+That is, the mean shift (expectation) is proportional to the score function.
+
+*Remark* Tweedie's Formula is the mean shift theorem under Gaussian settings.
+
+The local mean is an inverse operation of adding noise.
 ![DAE](dae.jpg)
 
 ### Diffution model
@@ -416,7 +435,7 @@ refer to the denoising autoencoder
 *Remark.* Multiheads: $\{\sum_{jl}w_{jlm}K_l(x,x')x^{(j)}\}_m$
 
 
-### Optimization of the kernels
+### Optimization of the kernels/feature mappings
 
 - continous case:
 $$
@@ -426,6 +445,25 @@ $$
 $$
 \max_{\phi,\psi}\sum_i(\phi(x_i)\psi(X)^TC(X))_i\oslash (\phi(x_i)\psi(X)^T1_{N\times p})
 $$
+
+### Multidimension Scaling(MDS)
+
+The low rank decomposition of kernel:
+$$
+K(x,y)\approx \phi(x)\cdot\psi(x)
+$$
+
+MDS: 
+$$
+\min_{\phi,\psi}d(K(X), \phi(X)\cdot\psi(X))
+$$
+or (without explicit expression of $\phi,\psi$)
+$$
+\min_{Z_1,Z_2}d(K(X), Z_1 Z_2^T), Z_1,Z_2:\R^{N\times q}
+$$
+
+If $\phi$ and $\psi$ (or $Z_1,Z_2$) is 2D, then we get a planar embedding method.
+
 
 ### Hierachical local model
 
@@ -445,15 +483,41 @@ Transformer is a hierachical(6 leyers by default) local mean with adaptive multi
 
 see the ref `Buades2005`
 
+Let $y\sim f({x},\theta)$ with ${x}\in\mathbb{R}^p$ be a machine learning model. Then, its non - local model is defined as:
+  $$
+  \min_{\theta}\sum_{j\in \mathcal{P}({x}_i),j\neq i}w_{ij}\sum_{k}K({x}_j,{x}_k)l(y_k, f({x}_k,\theta)) \,,
+  $$
+where $w_{ij}\approx \mathrm{e}^{-\frac{1}{2}\|{z}_i-{z}_j\|^2_{\Sigma}}$, ${z}_i:=\{y_l:~\|{x}_l-{x}_i\|<\delta\}$ with $\delta > 0$, $\Sigma$ is a suitable positive - definite matrix, and the meanings of other symbols are the same as above.
+
+
 ### Heterogenuous kernel
+
+Inspired by heterogenuous graph
 
 $K(x,y):\mathcal{X}\times \mathcal{Y}\to \R$.
 
-### super kernel
+### Hyper-kernel
+
+Inspired by hyper-graph
 
 $m$-var. kernel: $K(x_1,\cdots,x_m)$
+kernel tensor: $K(X_1,\cdots,X_m)$
 
-## Categorical-style method
+*Exmaple*[TriMap in ref `Amid2019`]
+Let $s$ be the similarity on the sample space $\mathcal{X}$. Define the ternary kernel on $\mathcal{X}$ as
+$$
+  K(x_1,x_2,x_3) = \frac{s(x_1,x_2)}{s(x_1,x_2)+s(x_1,x_3)},\quad x_1,x_2,x_3\in\mathcal{X}
+$$
+which represents the degree of proximity of $x_2$ to $x_1$ relative to $x_3$. It can be called the "contrastive kernel". The corresponding "ternary MDS" is
+  $$
+  \min_{\{{z}_i\}}\sum_{i_1i_2i_3} K(x_{i_1},x_{i_2},x_{i_3}) h(d_{i_1i_2}^2 - d_{i_1i_3}^2)\\
+  d_{ij} := \|{z}_{i} - {z}_{j}\|_2 \nonumber
+$$
+where $h(\cdot)$ is a reasonable increasing function. When $h(x)=x$, It is equivalent to the MDS based on the kernel matrix $\{\sum_{i_3}K(x_{i_1},x_{i_2},x_{i_3})\}$.
+
+![Trimap 2D](trimap-2d.png)
+
+## Categorical-style notation
 
 $\mathrm{loc}(M)$ represents to apply the localization trick on a given model $M$.
 
@@ -483,6 +547,8 @@ The local model is perfect in the following sense:
 
 
 *References*
+
+- Comaniciu. Mean Shift: A robust approach toward feature space analysis, 2002.
 
 - R. A. Hummel and S. W. Zucker, "On the foundations of relaxation labeling processes," *IEEE Transactions on Pattern Analysis and Machine Intelligence*, 1983(3): 267 - 287.
 
