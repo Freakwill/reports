@@ -189,16 +189,28 @@ where $U_x$ is a certain neighorhood of $x$, $\{x_i,y_i\}$ is the sample.
 **Def**
 A local mean of the sample $\{(x_i,y_i)\}$ on target var $x_*$, is defined as,
 $$
-\hat{y}(x_0):=\sum_i K(x_0,x_i)y_i/\sum_i K(x_0,x_i)
+\hat{y}(x_*):=\sum_i K(x_*,x_i)y_i/\sum_i K(x_*,x_i)
 $$
 
-*Fact* Any local regression is reduced to the local mean, approximately.
+*Fact* Any local regression can be reduced to the local mean, approximately.
+
+![](local-mean-pgm.png)
 
 
 ### The local mode  (for classification)
 
+Similarly, we have
 $$
-M(y|x)\approx \max_k \{y_i=k | x_i\in U_x\} \quad\text{or}\quad \max_k\sum_i p(x_i=k|x)
+M(y|x)\approx \max_k \{y_i=k | x_i\in U_x\} \quad\text{or}\quad \max_k\sum_{y_i=k} p(x_i|x)
+$$
+
+$$
+\hat{y}(x_*):= \max_k\sum_{y_i=k} K(x_*,x_i)
+$$
+
+For the binary-classification, i.e. $y=\pm 1$, we define
+$$
+\hat{y}(x_*):= \mathrm{sign}(\sum_{i} y_iK(x_*,x_i)), y_i=\pm 1
 $$
 
 ### The self-local mean
