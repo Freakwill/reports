@@ -342,10 +342,21 @@ See the reference `Hummel1983`.
 
 Another type of relaxation labeling
 
+### Hopfield
+
+Wlog, assume $\mathcal{X}=\{-1,1\}^p$
+*Linear self local mode*: $M_k(x_*;X):=\mathrm{sign}(m_K(x_*;X))=\mathrm{sign}(\sum_i\phi(x_*)\cdot \psi(x_i)x_i)$
+that is linear wrt $\phi(x)$.
+
+*Hopfield network*: Let $\phi(x)=\psi(x)=x$. we get Hopfield network $\mathrm{sign}(x_*^TXX^T)$
+
+*Remark* There is no linear self local mean.
+
 ### Query model
 
-The query model: $T(\{K(x_*,x_i)\},y_i)$, where $T$ is the query operator.
-If $T$ is linear, then it is the local mean.
+The query model: $T(\{K(x_*,x_i)\},y_i)$, where $T$ is the query operator, and $\{K(x_*,x_i)\}$ represents the matching result formally. 
+
+If $T$ is a linear operator, then it is indeed the local mean.
 
 ### Fuzzy inference
 
@@ -388,6 +399,16 @@ $$
 \max_{\phi,\psi}\sum_i(\phi(x_i)\psi(X)^TC(X))_i\oslash (\phi(x_i)\psi(X)^T1_{N\times p})
 $$
 
+### Hierachical local model
+
+The local-local model: $\sum_k\sum_jK(x_*,x_k)K(x_k,x_j)l(x_j,\theta)$
+
+Insert a non-linear mapping/single-leyer perceptron $f(\cdot,w)$: $\sum_k\sum_jK(x_*,x_k)f(K(x_k,x_j)l(x_j,\theta),w)$
+
+### Transformer
+
+Transformer is a hierachical(6 leyers by default) local mean with adaptive multihead kernels.
+
 ## Extention
 
 ### Heterogenuous kernel
@@ -396,14 +417,18 @@ $K(x,y):\mathcal{X}\times \mathcal{Y}\to \R$.
 
 ### super kernel
 
+$m$-var. kernel: $K(x_1,\cdots,x_m)$
+
 ## Categorical-style method
 
 $\mathrm{loc}(M)$ represents to apply the localization trick on a given model $M$.
 
 I call the "functor" loc, constructor, mapping a model to another.
 
+The local model is perfect in the following sense:
 1. $\mathrm{loc}(M)\simeq \mathrm{loc}(\mathrm{loc}(M))$ (in categorical-sence, not strictly)
 2. $\mathrm{loc}(M)$ must be complicative then $M$, if $M$ is linear.
+3. $\mathrm{loc}(M)$ is universal, as good as the neural network.
 
 <!-- ## Two toy examples
 
