@@ -324,7 +324,7 @@ $$
 \hat{v}(x_t):= \sum_{s} K(x_t,t,x_s,s) v(x_s)/\sum_{s} K(x_t,t,x_s,s)
 $$
 
-The time-series Q-K-V representation: $(\phi(x_t,t),\psi(x_t,t),v(x_t))$. It is called the key-query-value model in `Vaswani2017`.
+The *time-series Q-K-V representation*: $(\phi(x_t,t),\psi(x_t,t),v(x_t))$. It is called the *key-query-value model* in `Vaswani2017`.
 
 ## Other models
 
@@ -397,7 +397,12 @@ $$
 
 ### Denoising autoencoder
 
+the local mean is an inverse operation of adding noise.
+![DAE](dae.jpg)
+
 ### Diffution model
+
+refer to the denoising autoencoder
 
 ## Learning the kernels
 
@@ -434,6 +439,12 @@ Transformer is a hierachical(6 leyers by default) local mean with adaptive multi
 
 ## Extention
 
+### Non-local kernel
+
+![](nl-kernel.png)
+
+see the ref `Buades2005`
+
 ### Heterogenuous kernel
 
 $K(x,y):\mathcal{X}\times \mathcal{Y}\to \R$.
@@ -453,15 +464,15 @@ The local model is perfect in the following sense:
 2. $\mathrm{loc}(M)$ must be complicative then $M$, if $M$ is linear.
 3. $\mathrm{loc}(M)$ is universal, as good as the neural network.
 
-<!-- ## Two toy examples
+## Toy examples
 
-`local-demo.py`
+![Image denosing](local-image-denoise)
 
-![](local-average.png)
+![Missing value imputation](missing-lm.png)
 
-![](image-local-average.png)
+![Image segment](meanshift-segment.png)
 
- -->
+
 
 ## Summary
 
@@ -484,3 +495,6 @@ The local model is perfect in the following sense:
 - Dai, Zihang and Yang, Zhilin and Yang, Yiming and Carbonell, Jaime and Le, Quoc V and Salakhutdinov, Ruslan. Transformer-xl: Attentive language models beyond a fixed-length context,, arXiv:1901.02860, 2019
 
 - A. Vaswani, N. Shazeer, N. Norioka, J. Parmar, L. Jones, A. N. Gomez, Ł. Kaiser and I. Polosukhin, "Attention Is All You Need," in Advances in Neural Information Processing Systems, 2017: 5998-6008.
+
+- A. Buades, B. Coll, and J.-M. Morel. A Review of Image Denoising Algorithms, with a New One[J].
+Multiscale Model. Simul. 2005, 4: 490–530.
