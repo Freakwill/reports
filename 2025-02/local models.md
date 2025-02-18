@@ -199,13 +199,18 @@ $$
 
 ### The local mode  (for classification)
 
-Similarly, we have
+Similarly, we define *the local mode* as
 $$
 M(y|x)\approx \max_k \{y_i=k | x_i\in U_x\} \quad\text{or}\quad \max_k\sum_{y_i=k} p(x_i|x)
 $$
 
+Hence we define,
 $$
 \hat{y}(x_*):= \max_k\sum_{y_i=k} K(x_*,x_i)
+$$
+or
+$$
+P(y|x_*):= \max_k\sum_{i} K(x_*,x_i) P(y|x_*)
 $$
 
 For the binary-classification, i.e. $y=\pm 1$, we define
@@ -226,6 +231,8 @@ MeanShift (vector field): $m(x)-x$
 MeanShift iteration/updating rule: $x'\leftarrow m(x)$ (hard version) or $x' \leftarrow x + \alpha(m(x)-x)$ (soft/regularized version), $0\leq \alpha\leq 1$ is the learning rate.
 
 **MeanShift algorithm** is the iteration of the mapping $m$.
+
+*Theorem.* $m(x_*)=$
 
 ### The self-local mode
 
@@ -387,6 +394,10 @@ where $\phi(x_i)$ are the fuzzification of $x_i$ and $y_i$ are the real numbers.
 $$
 T(x_*, \{x_i\to y_i\}):=(\sum_iv(y_i)\langle\phi(x_i),\psi(x_i))\rangle
 $$
+
+### Denoising autoencoder
+
+### Diffution model
 
 ## Learning the kernels
 
